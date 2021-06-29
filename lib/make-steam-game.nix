@@ -6,7 +6,7 @@ callPackage drvPath {
   inherit game steamUserInfo proton protonWrapperScript;
   gameFiles = if !(lib.isList gameFiles) then steamGameFetcher {
     inherit steamUserInfo;
-    game = gameFile;
+    game = gameFiles;
   } else symlinkJoin {
     name = "${game.name}-files";
 
