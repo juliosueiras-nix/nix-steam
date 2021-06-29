@@ -12,6 +12,13 @@ nix-steam is a nix repo that contains steam games in both Linux and Windows(via 
 
 - it needs the `ca-derivation` and `recursive-nix` features of your nix configuration
 
+- it need sandbox to be off, hopefully in the future we can enable sandbox for everything
+
+- since it need `recursive-nix`, your nix-daemon(not the user's nix) need to be on unstable version
+
+## Note
+
+this can be run under non-nixos, same restriction apply to the above
 
 ## Logging in for Steam
 
@@ -123,7 +130,6 @@ makeSteamGame {
       appId = "1289310"; # same AppId from above
       depotId = "1289314";
       manifestId = "8723838119065609357";
-      hash = "";
       # platform = "windows"; # This option is only for Windows game
     })
 
@@ -132,7 +138,6 @@ makeSteamGame {
       appId = "1289310"; # same AppId from above
       depotId = "1289315";
       manifestId = "6394422377711576735";
-      hash = "";
       # platform = "windows"; # This option is only for Windows game
     })
   ];
@@ -142,46 +147,11 @@ makeSteamGame {
 }
 ```
 
-#### Build Hashes
+#### Build the Game
 
-now we are ready to get the hashes
+now we are ready to build the game
 
-run it with `nix-build --max-jobs 1`, once it's finished, fill it in, rerun it(it will trigger another build to make it content addressed)
-
-to end up with this
-
-```nix
-{ makeSteamGame, steamUserInfo, gameInfo, gameFileInfo }:
-
-makeSteamGame {
-  inherit steamUserInfo;
-
-  game = gameInfo {
-    name = "Helltaker";
-    appId = "1289310";
-  };
-
-  gameFiles = [
-    (gameFileInfo {
-      name = "Helltaker";
-      appId = "1289310";
-      depotId = "1289314";
-      manifestId = "8723838119065609357";
-      hash = "M0f1etPT2RvFP5iyJtWAje2C5BENQZqopiQzsGCa8lw=";
-    })
-
-    (gameFileInfo {
-      name = "Helltaker-Local";
-      appId = "1289310";
-      depotId = "1289315";
-      manifestId = "6394422377711576735";
-      hash = "kKSwK5mGr4IhjPB4PcK26U7GacDUravU5wtOsNs8VMI=";
-    })
-  ];
-
-  drvPath = ./wrapper.nix;
-}
-```
+run it with `nix-build --max-jobs 1`, to build the game
 
 ### Step 2: Wrapper time
 
@@ -252,8 +222,6 @@ Of course, you can do anything you want in the wrapper for game-specific fixes o
 Lastly, make sure you have the new game under the platform's top-level.nix
 
 ## Caveats
-
-- due to a bug/issue(not sure what is causing it), it will require a double build for the hash getting process(not the actual game building/installing part)
 
 - right now the password is plaintext in the running process, hopefully, there will be an improvement via read file or other methods
 
