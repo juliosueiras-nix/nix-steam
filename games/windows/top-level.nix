@@ -10,4 +10,5 @@ in {
   SleepingDogs = import ./sleepingDogs normalList;
   RocketLeague = import ./rocketLeague normalList;
   Warframe = import ./warframe normalList;
+  UminekoGoldenFantasia = import ./uminekoGoldenFantasia normalList;
 }

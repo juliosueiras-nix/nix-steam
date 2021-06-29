@@ -11,7 +11,7 @@ rec {
   protonWrapperScript = { game, gameFiles, proton, lndir, lib, steamUserInfo, steamcmd, steam }: ''
     export SteamAppId=${game.appId}
     export HOME=/tmp/steam-test
-    mkdir -p $HOME/{protons/${proton.name},.proton,games/${game.name}}
+    mkdir -p $HOME/{protons/${proton.name}/prefix,games/${game.name}}
     ${steamcmd}/bin/steamcmd +exit
     ${lndir}/bin/lndir ${gameFiles} $HOME/games/${game.name}
     chmod -R +rw $HOME/games/${game.name}
@@ -19,6 +19,7 @@ rec {
     chmod +x $HOME/protons/${proton.name}/proton
 
     export PROTON_HOME=$HOME/protons/${proton.name}
+    export PROTON_PREFIX_HOME=$PROTON_HOME/prefix
 
     ${lib.optionalString steamUserInfo.useGuardFiles ''
       cp -r ${steamUserInfo.cachedFileDir}/* $HOME/.steam/steam

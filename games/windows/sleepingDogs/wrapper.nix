@@ -46,14 +46,14 @@ writeScriptBin game.name ''
 
   cp ${./DisplaySettings.xml} $HOME/games/${game.name}/data/DisplaySettings.xml
 
-  export WINEPREFIX=$HOME/.proton/pfx
+  export WINEPREFIX=$PROTON_PREFIX_HOME/pfx
 
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
     cd $HOME/games/${game.name}
     export WINEDLLOVERRIDES="dxgi=n" 
     export DXVK_HUD=1
     export WINEDEBUG=+treeview
-    export STEAM_COMPAT_DATA_PATH=$HOME/.proton
+    export STEAM_COMPAT_DATA_PATH=$PROTON_PREFIX_HOME
     export STEAM_COMPAT_CLIENT_INSTALL_PATH=$HOME/.steam/steam
     $PROTON_HOME/proton waitforexitandrun vcredist_x64.exe
     $PROTON_HOME/proton waitforexitandrun ./SDHDShip.exe	
