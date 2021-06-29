@@ -12,4 +12,5 @@ in {
   Warframe = import ./warframe normalList;
   UminekoGoldenFantasia = import ./uminekoGoldenFantasia normalList;
   Payday = import ./payday normalList;
+  ProjectWingman = import ./projectWingman normalList;
 }
