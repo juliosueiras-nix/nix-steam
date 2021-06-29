@@ -1,10 +1,12 @@
-{ callPackage }:
+{ callPackage, nixpkgsSource }:
 
 rec {
   steamUserInfo = import ./steam-user.nix;
   gameInfo = import ./game-info.nix;
   gameFileInfo = import ./game-file-info.nix;
-  steamGameFetcher = callPackage ./game-files-fetcher.nix {};
+  steamGameFetcher = callPackage ./game-files-fetcher.nix {
+    inherit nixpkgsSource;
+  };
 
   protonWrapperScript = { game, gameFiles, proton, lndir, lib, steamUserInfo, steamcmd, steam }: ''
     export SteamAppId=${game.appId}

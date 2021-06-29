@@ -14,7 +14,7 @@ makeSteamGame {
       appId = "1289310";
       depotId = "1289314";
       manifestId = "8723838119065609357";
-      hash = "M0f1etPT2RvFP5iyJtWAje2C5BENQZqopiQzsGCa8lw=";
+      hash = "6uE2U07k0kIiMTjOeooQix0IjiU9riTDxr/QjXE7BaQ=";
     })
 
     (gameFileInfo {
@@ -22,7 +22,7 @@ makeSteamGame {
       appId = "1289310";
       depotId = "1289315";
       manifestId = "6394422377711576735";
-      hash = "kKSwK5mGr4IhjPB4PcK26U7GacDUravU5wtOsNs8VMI=";
+      hash = "tZGkRGaU8KIIGfbo5GvY9eOFtP7Ua7gkZGDyzTe+UnI=";
     })
   ];
 
