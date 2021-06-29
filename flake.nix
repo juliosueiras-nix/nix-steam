@@ -27,7 +27,6 @@
     devShell =
       pkgs.mkShell { 
         NIX_PATH = "nixpkgs=${nixpkgs}";
-        DOCKER_HOST = "unix:///var/run/podman/podman.sock";
         buildInputs = [ 
           pkgs.arion
           pkgs.nixfmt

@@ -11,4 +11,5 @@ in {
   RocketLeague = import ./rocketLeague normalList;
   Warframe = import ./warframe normalList;
   UminekoGoldenFantasia = import ./uminekoGoldenFantasia normalList;
+  Payday = import ./payday normalList;
 }
