@@ -13,7 +13,6 @@ makeSteamGame {
     appId = "668350";
     depotId = "668353";
     manifestId = "8690377579741694774";
-    hash = "opxu66fEnr0iCvjOP+IMYcZfp+YsOA2tHqBtrVnxa8c=";
   };
 
   drvPath = ./wrapper.nix;

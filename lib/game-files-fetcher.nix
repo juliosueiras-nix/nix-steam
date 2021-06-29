@@ -69,7 +69,6 @@ in stdenv.mkDerivation {
   ];
 
   NIX_PATH = "nixpkgs=${nixpkgsSource}";
-  NIX_REMOTE = "daemon";
   buildCommand = ''
     nix-build ${recursiveBuildDef}
     nix-build --argstr currPath $(realpath ./result) ${nestedLinkFarm} 

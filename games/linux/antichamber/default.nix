@@ -13,7 +13,6 @@ makeSteamGame {
     appId = "219890";
     depotId = "219893";
     manifestId = "1098988246616812101";
-    hash = "0/zvckRK6ps2mnK+QBjP7W3kte0M+jLWomN7BoYusbE=";
 
     installPhase = ''
       mkdir -p $out

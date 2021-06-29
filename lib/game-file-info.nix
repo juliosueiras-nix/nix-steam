@@ -1,3 +1,3 @@
-{ name, appId, depotId, manifestId, platform ? "linux", extraAction ? "", hash }: {
-  inherit name appId platform depotId manifestId extraAction hash;
+{ name, appId, depotId, manifestId, platform ? "linux", extraAction ? "" }: {
+  inherit name appId platform depotId manifestId extraAction;
 }
