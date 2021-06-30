@@ -1,20 +1,16 @@
-{ game, lib, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, ... }:
+{ game, lib, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, linuxWrapperScript, realGameLocation, ... }:
 
-# Make sure you run it in a directory with no files
 writeScriptBin game.name ''
-  export SteamAppId=${game.appId}
-  export HOME=/tmp/steam-test
-  ${steamcmd}/bin/steamcmd +exit
+  ${
+    linuxWrapperScript {
+      inherit game gameFiles lndir lib steamUserInfo steamcmd realGameLocation;
+    }
+  }
 
-  ${lib.optionalString steamUserInfo.useGuardFiles ''
-  cp -r ${steamUserInfo.cachedFileDir}/* $HOME/.steam/steam
-  ''}
-
-  chmod -R +rw $HOME/.steam
   ${steamcmd}/bin/steamcmd +login ${steamUserInfo.username} ${steamUserInfo.password} +exit
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
-    export LD_LIBRARY_PATH=${gameFiles}/Binaries/Linux/lib:$LD_LIBRARY_PATH
-    cd ${gameFiles}/Binaries/Linux
+    export LD_LIBRARY_PATH=${realGameLocation}/Binaries/Linux/lib:$LD_LIBRARY_PATH
+    cd $HOME/games/${game.name}
     exec ./UDKGame-Linux
   ''}
 ''

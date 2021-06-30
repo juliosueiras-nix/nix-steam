@@ -1,9 +1,9 @@
-{ protonWrapperScript, game, proton, lib, steamcmd, steam, writeText, steam-run, writeScript, writeScriptBin, gameFiles, lndir, steamUserInfo, fullCopy ? true, ... }:
+{ realGameLocation, protonWrapperScript, game, proton, lib, steamcmd, steam, writeText, steam-run, writeScript, writeScriptBin, gameFiles, lndir, steamUserInfo, fullCopy ? true, ... }:
 
 writeScriptBin game.name ''
   ${
     protonWrapperScript {
-      inherit game gameFiles proton lndir lib steamUserInfo steamcmd steam;
+      inherit game gameFiles proton lndir lib steamUserInfo steamcmd steam realGameLocation;
     }
   }
   ${lib.optionalString fullCopy ''

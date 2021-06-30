@@ -1,15 +1,18 @@
 { makeSteamGame, steamUserInfo, gameInfo, gameFileInfo }:
 
-makeSteamGame {
+let
+  mainGameName = "UminekoAnswer";
+in makeSteamGame {
   inherit steamUserInfo;
 
   game = gameInfo {
-    name = "UminekoAnswer";
+    name = mainGameName;
     appId = "639490";
   };
 
   gameFiles = [
     (gameFileInfo {
+      inherit mainGameName;
       name = "UminekoAnswer";
       appId = "639490";
       depotId = "639491";
@@ -17,6 +20,7 @@ makeSteamGame {
     })
 
     (gameFileInfo {
+      inherit mainGameName;
       name = "UminekoQuestion-Linux";
       appId = "639490";
       depotId = "639492";

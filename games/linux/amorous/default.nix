@@ -1,15 +1,18 @@
 { makeSteamGame, steamUserInfo, gameInfo, gameFileInfo }:
 
-makeSteamGame {
+let
+  mainGameName = "Amorous";
+in makeSteamGame {
   inherit steamUserInfo;
 
   game = gameInfo {
-    name = "Amorous";
+    name = mainGameName;
     appId = "778700";
   };
 
   gameFiles = [
     (gameFileInfo {
+      inherit mainGameName;
       name = "Amorous";
       appId = "778700";
       depotId = "778704";
@@ -21,6 +24,7 @@ makeSteamGame {
     })
 
     (gameFileInfo {
+      inherit mainGameName;
       name = "Amorous-Content";
       appId = "778700";
       depotId = "778701";

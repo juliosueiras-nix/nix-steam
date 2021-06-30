@@ -1,15 +1,19 @@
 { makeSteamGame, steamUserInfo, gameInfo, proton, gameFileInfo }:
 
-makeSteamGame {
+let
+  mainGameName = "JustCause";
+in makeSteamGame {
   inherit steamUserInfo;
 
   game = gameInfo {
-    name = "JustCause";
+    name = mainGameName;
     appId = "6880";
+    platform = "windows";
   };
 
   gameFiles = [
     (gameFileInfo {
+      inherit mainGameName;
       name = "JustCause-Binaries";
       platform = "windows";
       appId = "6880";
@@ -18,6 +22,7 @@ makeSteamGame {
     })
 
     (gameFileInfo {
+      inherit mainGameName;
       name = "JustCause-FMV1";
       platform = "windows";
       appId = "6880";
@@ -26,6 +31,7 @@ makeSteamGame {
     })
 
     (gameFileInfo {
+      inherit mainGameName;
       name = "JustCause-FMV2";
       platform = "windows";
       appId = "6880";
@@ -34,6 +40,7 @@ makeSteamGame {
     })
 
     (gameFileInfo {
+      inherit mainGameName;
       name = "JustCause-PC01";
       platform = "windows";
       appId = "6880";
@@ -42,6 +49,7 @@ makeSteamGame {
     })
 
     (gameFileInfo {
+      inherit mainGameName;
       name = "JustCause-PC02";
       platform = "windows";
       appId = "6880";
@@ -50,6 +58,7 @@ makeSteamGame {
     })
 
     (gameFileInfo {
+      inherit mainGameName;
       name = "JustCause-PC03";
       platform = "windows";
       appId = "6880";
@@ -58,6 +67,7 @@ makeSteamGame {
     })
 
     (gameFileInfo {
+      inherit mainGameName;
       name = "JustCause-PC04";
       platform = "windows";
       appId = "6880";

@@ -1,14 +1,18 @@
 { makeSteamGame, proton, steamUserInfo, gameInfo, gameFileInfo }:
 
-makeSteamGame {
+let
+  mainGameName = "Warframe";
+in makeSteamGame {
   inherit steamUserInfo;
 
   game = gameInfo {
-    name = "Warframe";
+    name = mainGameName;
     appId = "230410";
+    platform = "windows";
   };
 
   gameFiles = gameFileInfo {
+    inherit mainGameName;
     name = "Warframe";
     appId = "230410";
     platform = "windows";

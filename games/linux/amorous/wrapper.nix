@@ -1,18 +1,19 @@
-{ enableAdult ? false, game, lib, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, lndir, ... }:
+{ enableAdult ? false, game, linuxWrapperScript, lib, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, realGameLocation, lndir, ... }:
 
 # Make sure you run it in a directory with no files
 writeScriptBin game.name ''
-  export SteamAppId=${game.appId}
-  export HOME=/tmp/steam-test
-  mkdir -p $HOME/games/${game.name}
-  ${lndir}/bin/lndir ${gameFiles} $HOME/games/${game.name}
-  chmod -R +rw $HOME/games/${game.name}
+  ${
+    linuxWrapperScript {
+      inherit game gameFiles lndir lib steamUserInfo steamcmd realGameLocation;
+    }
+  }
+
   unlink $HOME/games/${game.name}/Amorous.Game.Unix.bin.x86_64
   unlink $HOME/games/${game.name}/Amorous.Game.Unix
   unlink $HOME/games/${game.name}/FNA.dll
-  cp -L ${gameFiles}/Amorous.Game.Unix $HOME/games/${game.name}/Amorous.Game.Unix
-  cp -L ${gameFiles}/Amorous.Game.Unix.bin.x86_64 $HOME/games/${game.name}/Amorous.Game.Unix.bin.x86_64
-  cp -L ${gameFiles}/FNA.dll $HOME/games/${game.name}/
+  cp -L ${realGameLocation}/Amorous.Game.Unix $HOME/games/${game.name}/Amorous.Game.Unix
+  cp -L ${realGameLocation}/Amorous.Game.Unix.bin.x86_64 $HOME/games/${game.name}/Amorous.Game.Unix.bin.x86_64
+  cp -L ${realGameLocation}/FNA.dll $HOME/games/${game.name}/
   chmod +x $HOME/games/${game.name}/Amorous.Game.Unix*
 
   ${if enableAdult then ''
@@ -21,16 +22,9 @@ writeScriptBin game.name ''
     rm $HOME/games/${game.name}/ShowMeSomeBooty.txt
   ''}
 
-  ${steamcmd}/bin/steamcmd +exit
-
-  ${lib.optionalString steamUserInfo.useGuardFiles ''
-    cp -r ${steamUserInfo.cachedFileDir}/* $HOME/.steam/steam
-  ''}
-
-  chmod -R +rw $HOME/.steam
   ${steamcmd}/bin/steamcmd +login ${steamUserInfo.username} ${steamUserInfo.password} +exit
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
-    export LD_LIBRARY_PATH=${gameFiles}/lib:${gameFiles}/lib64:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=${realGameLocation}/lib:${realGameLocation}/lib64:$LD_LIBRARY_PATH
     export MONO_IOMAP=case
     cd $HOME/games/${game.name}
     exec ./Amorous.Game.Unix

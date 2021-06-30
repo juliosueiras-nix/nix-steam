@@ -1,23 +1,17 @@
-{ game, lib, steam, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, symlinkJoin, lndir, ... }:
+{ game, lib, steam, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, symlinkJoin, lndir, linuxWrapperScript, realGameLocation, ... }:
 
 writeScriptBin game.name ''
-  export SteamAppId=${game.appId}
-  export HOME=/tmp/steam-test
-  mkdir -p $HOME/games/${game.name}
-  ${steamcmd}/bin/steamcmd +exit
-
-  ${lib.optionalString steamUserInfo.useGuardFiles ''
-    cp -r ${steamUserInfo.cachedFileDir}/* $HOME/.steam/steam
-  ''}
-
-  ${lndir}/bin/lndir ${gameFiles} $HOME/games/${game.name}
-  chmod -R +rw $HOME/games/${game.name}
+  ${
+    linuxWrapperScript {
+      inherit game gameFiles lndir lib steamUserInfo steamcmd realGameLocation;
+    }
+  }
 
   rm $HOME/games/${game.name}/portal2.sh
-  cp -L ${gameFiles}/portal2.sh $HOME/games/${game.name}/portal2.sh
+  cp -L ${realGameLocation}/portal2.sh $HOME/games/${game.name}/portal2.sh
 
   rm $HOME/games/${game.name}/portal2_linux
-  cp -L ${gameFiles}/portal2_linux $HOME/games/${game.name}/portal2_linux
+  cp -L ${realGameLocation}/portal2_linux $HOME/games/${game.name}/portal2_linux
 
   chmod +rwx $HOME/games/${game.name}/portal2.sh
   chmod +rwx $HOME/games/${game.name}/portal2_linux

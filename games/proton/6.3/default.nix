@@ -9,6 +9,7 @@ makeSteamGame {
   };
 
   gameFiles = gameFileInfo {
+    mainGameName = "Proton6_3";
     name = "Proton6_3";
     appId = "1580130";
     depotId = "1580131";

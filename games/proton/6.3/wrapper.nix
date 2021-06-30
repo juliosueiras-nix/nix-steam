@@ -1,3 +1,5 @@
-{ gameFiles, ... }:
+{ gameFiles, game, ... }:
 
-gameFiles
+gameFiles.overrideAttrs (_:{
+  name = game.name;
+})

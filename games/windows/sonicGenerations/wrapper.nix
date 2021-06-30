@@ -1,4 +1,4 @@
-{ game, proton, lib, steamcmd, steam, writeText, steam-run, writeScript, writeScriptBin, gameFiles, lndir, steamUserInfo, protonWrapperScript, ... }:
+{ game, proton, lib, steamcmd, steam, writeText, steam-run, writeScript, writeScriptBin, gameFiles, lndir, steamUserInfo, protonWrapperScript, realGameLocation, ... }:
 
 let
   sonicReg = writeText "sonic-generation.reg" ''
@@ -13,7 +13,7 @@ REGEDIT4
 in writeScriptBin game.name ''
   ${
     protonWrapperScript {
-      inherit game gameFiles proton lndir lib steamUserInfo steamcmd steam;
+      inherit game gameFiles proton lndir lib steamUserInfo steamcmd steam realGameLocation;
     }
   }
 

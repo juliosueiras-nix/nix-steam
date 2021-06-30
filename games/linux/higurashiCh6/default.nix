@@ -1,14 +1,17 @@
 { makeSteamGame, steamUserInfo, gameInfo, gameFileInfo }:
 
-makeSteamGame {
+let
+  mainGameName = "HigurashiCh6";
+in makeSteamGame {
   inherit steamUserInfo;
 
   game = gameInfo {
-    name = "HigurashiCh6";
+    name = mainGameName;
     appId = "668350";
   };
 
   gameFiles = gameFileInfo {
+    inherit mainGameName;
     name = "HigurashiCh6";
     appId = "668350";
     depotId = "668353";

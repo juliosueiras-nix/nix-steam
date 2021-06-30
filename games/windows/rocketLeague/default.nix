@@ -1,14 +1,18 @@
 { makeSteamGame, proton, steamUserInfo, gameInfo, gameFileInfo }:
 
-makeSteamGame {
+let 
+  mainGameName = "RocketLeague";
+in makeSteamGame {
   inherit steamUserInfo;
 
   game = gameInfo {
-    name = "RocketLeague";
+    name = mainGameName;
     appId = "252950";
+    platform = "windows";
   };
 
   gameFiles = gameFileInfo {
+    inherit mainGameName;
     name = "RocketLeague";
     appId = "252950";
     platform = "windows";

@@ -1,15 +1,19 @@
 { makeSteamGame, steamUserInfo, gameInfo, proton, gameFileInfo }:
 
-makeSteamGame {
+let
+  mainGameName = "SleepingDogs";
+in makeSteamGame {
   inherit steamUserInfo;
 
   game = gameInfo {
-    name = "SleepingDogs";
+    name = mainGameName;
     appId = "307690";
+    platform = "windows";
   };
 
   gameFiles = [
     (gameFileInfo {
+      inherit mainGameName;
       name = "SleepingDogs-Exec";
       platform = "windows";
       appId = "307690";
@@ -18,6 +22,7 @@ makeSteamGame {
     })
 
     (gameFileInfo {
+      inherit mainGameName;
       name = "SleepingDogs-UI";
       platform = "windows";
       appId = "307690";
@@ -26,6 +31,7 @@ makeSteamGame {
     })
 
     (gameFileInfo {
+      inherit mainGameName;
       name = "SleepingDogs-Content";
       platform = "windows";
       appId = "307690";

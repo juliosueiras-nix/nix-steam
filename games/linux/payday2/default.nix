@@ -1,15 +1,18 @@
 { makeSteamGame, steamUserInfo, gameInfo, gameFileInfo }:
 
-makeSteamGame {
+let
+  mainGameName = "Payday2";
+in makeSteamGame {
   inherit steamUserInfo;
 
   game = gameInfo {
-    name = "Payday2";
+    name = mainGameName;
     appId = "218620";
   };
 
   gameFiles = [
     (gameFileInfo {
+      inherit mainGameName;
       name = "Payday2";
       appId = "218620";
       depotId = "218632";
