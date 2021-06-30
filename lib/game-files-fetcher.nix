@@ -1,65 +1,38 @@
-{ stdenv, nixpkgsSource, writeText, jq, nixUnstable, lib, cacert, depotdownloader, ...  }:
+{ stdenv, nixpkgsSource, ruby, writeText, jq, nixUnstable, lib, cacert, depotdownloader, ...  }:
 
 { game, steamUserInfo, ... }:
 
 let
-  recursiveBuildDef = writeText "${game.name}-nested-build" ''
-with import <nixpkgs> {
-  config = { 
-    allowUnfree = true;
-  };
-};
-stdenv.mkDerivation {
-    name = "${game.name}-links";
-    requiredSystemFeatures = [ "recursive-nix" ];
-    __contentAddressed = true;
+  generateJSON = writeText "generate-manifest-json" ''
+    require 'json'
 
-    buildInputs = [
-      jq
-      (lib.getDev nixUnstable)
-      cacert
-      depotdownloader
-    ];
+    lineCount = 0
 
-    buildCommand = '''
-      export HOME=$PWD
-      ${lib.optionalString steamUserInfo.useGuardFiles ''
-        mkdir -p $HOME/.local/share/IsolatedStorage
-        cp -r ${steamUserInfo.depotdownloaderStorage}/* $HOME/.local/share/IsolatedStorage/
-        chmod -R +rw $HOME/.local/share/IsolatedStorage/
-      ''}
+    fileName = ""
+    fileSize = 0
+    md5Checksum = ""
 
-      depotdownloader -os ${game.platform} -username ${steamUserInfo.username} -password ${steamUserInfo.password} -dir $PWD/game -app ${game.appId} -depot ${game.depotId} -manifest ${game.manifestId} -max-downloads 20
-      rm -r game/.DepotDownloader
+    result = []
 
-      ${game.extraAction}
-    
-      mkdir -p $out
-      cd game
+    File.read(ARGV[0]).split("\n").map {|line|
+      case lineCount
+      when 0
+        fileName = line
+        lineCount+=1
+      when 1
+        fileSize = line.to_i
+        lineCount+=1
+      when 2
+        md5Checksum = line.gsub(/\t/, ${"'"}').downcase
+        result.append({ fileName: fileName, fileSize: fileSize, md5Checksum: md5Checksum })
+        lineCount=0
+      end
+    }
 
-      find * -type f -exec echo "Adding {} to store" \;  -exec bash -c 'echo "{ \"name\": \"{}\", \"path\": \"$(file="{}"; nix store add-file --name $(basename "{}" | sed "s/[^a-zA-Z]*//g") "$file")\" }"  >> $out/paths.json' \;
-      cat $out/paths.json | jq -s '.' > temp
-      mv temp $out/paths.json
-    ''';
-
-    outputHashAlgo = "sha256";
-    outputHashMode = "recursive";
-  }
-'';
-
-  nestedLinkFarm = writeText "${game.name}-nested-build" ''
-with import <nixpkgs> {
-  config = { 
-    allowUnfree = true;
-  };
-};
-
-{ currPath }: linkFarm "${game.name}-linkfarm" (builtins.fromJSON (builtins.readFile "''${currPath}/paths.json"))
-'';
+    puts result.to_json
+  '';
 in stdenv.mkDerivation {
   name = "${game.name}-links";
-
-  requiredSystemFeatures = [ "recursive-nix" ];
 
   buildInputs = [
     jq
@@ -68,15 +41,37 @@ in stdenv.mkDerivation {
     depotdownloader
   ];
 
-  NIX_PATH = "nixpkgs=${nixpkgsSource}";
   buildCommand = ''
-    nix-build ${recursiveBuildDef}
-    nix-build --argstr currPath $(realpath ./result) ${nestedLinkFarm} 
-    ln -s $(realpath ./result) $out
-    echo $out
+    export HOME=$PWD
+    ${lib.optionalString steamUserInfo.useGuardFiles ''
+      mkdir -p $HOME/.local/share/IsolatedStorage
+      cp -r ${steamUserInfo.depotdownloaderStorage}/* $HOME/.local/share/IsolatedStorage/
+      chmod -R +rw $HOME/.local/share/IsolatedStorage/
+    ''}
+    depotdownloader -os ${game.platform} -username ${steamUserInfo.username} -password ${steamUserInfo.password} -dir $PWD/game -app ${game.appId} -depot ${game.depotId} -manifest-only -manifest ${game.manifestId} -max-downloads 20 
+    rm -r game/.DepotDownloader
+
+    sed -i '1,2d' game/manifest*
+    ${ruby}/bin/ruby ${generateJSON} game/manifest* > manifest.json
+    rm -r game
+
+    depotdownloader -os ${game.platform} -username ${steamUserInfo.username} -password ${steamUserInfo.password} -dir $PWD/game -app ${game.appId} -depot ${game.depotId} -manifest ${game.manifestId} -max-downloads 20 
+    rm -r game/.DepotDownloader
+
+    ${game.extraAction}
+  
+    cd game 
+    mkdir -p ${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/
+    cat ../manifest.json | jq -r '.[].fileName' | xargs -I % sh -c 'mkdir -p "${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/$(dirname "%")"; mv "%" "${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/%"'
+    chmod -R g+rw ${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/
+
+    cd ..
+    rm -r game
+
+    mkdir -p $out/${game.name}
+    mv manifest.json $out/${game.name}/manifest.json
   '';
 
-  __contentAddressed = false;
   outputHashAlgo = "sha256";
   outputHashMode = "recursive";
 }

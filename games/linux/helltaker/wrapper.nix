@@ -5,13 +5,15 @@ writeScriptBin game.name ''
   export HOME=/tmp/steam-test
   ${steamcmd}/bin/steamcmd +exit
 
-  mkdir -p $HOME/games/${game.name}
+  mkdir -p $HOME/games/${game.name}/manifests
 
-  ${lndir}/bin/lndir ${gameFiles} $HOME/games/${game.name}
+  ${lndir}/bin/lndir ${steamUserInfo.targetStore}/${game.platform}/${game.name}/ $HOME/games/${game.name}/
+  ${lndir}/bin/lndir ${gameFiles} $HOME/games/${game.name}/manifests
   chmod -R +rw $HOME/games/${game.name}
+
   rm $HOME/games/${game.name}/helltaker_lnx.x86_64	
-  cp -L ${gameFiles}/helltaker_lnx.x86_64 $HOME/games/${game.name}/
-  chmod +rwx $HOME/games/${game.name}/helltaker_lnx.x86_64
+  cp -L ${steamUserInfo.targetStore}/${game.platform}/${game.name}/helltaker_lnx.x86_64 $HOME/games/${game.name}/
+  chmod -R +rwx $HOME/games/${game.name}/helltaker_lnx.x86_64
 
   ${lib.optionalString steamUserInfo.useGuardFiles ''
     cp -r ${steamUserInfo.cachedFileDir}/* $HOME/.steam/steam

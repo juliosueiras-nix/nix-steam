@@ -1,15 +1,18 @@
 { makeSteamGame, steamUserInfo, gameInfo, gameFileInfo }:
 
-makeSteamGame {
+let
+  mainGameName = "Helltaker";
+in makeSteamGame {
   inherit steamUserInfo;
 
   game = gameInfo {
-    name = "Helltaker";
+    name = mainGameName;
     appId = "1289310";
   };
 
   gameFiles = [
     (gameFileInfo {
+      inherit mainGameName;
       name = "Helltaker";
       appId = "1289310";
       depotId = "1289314";
@@ -17,6 +20,7 @@ makeSteamGame {
     })
 
     (gameFileInfo {
+      inherit mainGameName;
       name = "Helltaker-Local";
       appId = "1289310";
       depotId = "1289315";

@@ -2,12 +2,15 @@
 
 with helperLib;
 
-{
-  Antichamber = import ./antichamber { inherit steamUserInfo gameInfo gameFileInfo makeSteamGame; };
-  Amorous = import ./amorous { inherit steamUserInfo gameInfo gameFileInfo makeSteamGame; };
-  HigurashiCh6 = import ./higurashiCh6 { inherit steamUserInfo gameInfo gameFileInfo makeSteamGame; };
-  Helltaker = import ./helltaker { inherit steamUserInfo gameInfo gameFileInfo makeSteamGame; };
-  UminekoQuestion = import ./uminekoQuestion { inherit steamUserInfo gameInfo gameFileInfo makeSteamGame; };
-  UminekoAnswer = import ./uminekoAnswer { inherit steamUserInfo gameInfo gameFileInfo makeSteamGame; };
-  Portal2 = import ./portal2 { inherit steamUserInfo gameInfo gameFileInfo makeSteamGame; };
+let
+  normalList = { inherit steamUserInfo gameInfo gameFileInfo makeSteamGame; };
+in {
+  Antichamber = import ./antichamber normalList;
+  Amorous = import ./amorous normalList;
+  HigurashiCh6 = import ./higurashiCh6 normalList;
+  Helltaker = import ./helltaker normalList;
+  UminekoQuestion = import ./uminekoQuestion normalList;
+  UminekoAnswer = import ./uminekoAnswer normalList;
+  Portal2 = import ./portal2 normalList;
+  Payday2 = import ./payday2 normalList;
 }
