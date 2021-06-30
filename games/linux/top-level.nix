@@ -13,4 +13,5 @@ in {
   UminekoAnswer = import ./uminekoAnswer normalList;
   Portal2 = import ./portal2 normalList;
   Payday2 = import ./payday2 normalList;
+  TheStanleyParable = import ./theStanleyParable normalList;
 }
