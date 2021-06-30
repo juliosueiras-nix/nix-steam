@@ -62,8 +62,7 @@ in stdenv.mkDerivation {
   
     cd game 
     mkdir -p ${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/
-    cat ../manifest.json | jq -r '.[].fileName' | xargs -I % sh -c 'mkdir -p "${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/$(dirname "%")"; mv "%" "${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/%"'
-    chmod -R g+rw ${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/
+    cat ../manifest.json | jq -r '.[].fileName' | xargs -I % sh -c 'mkdir -p "${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/$(dirname "%")"; chmod g+rw "${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/$(dirname "%")"; mv "%" "${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/%"; chmod g+rw "${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/%"'
 
     cd ..
     rm -r game

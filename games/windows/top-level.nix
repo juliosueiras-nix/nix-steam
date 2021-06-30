@@ -13,4 +13,8 @@ in {
   UminekoGoldenFantasia = import ./uminekoGoldenFantasia normalList;
   Payday = import ./payday normalList;
   ProjectWingman = import ./projectWingman normalList;
+  SteinsGate = import ./steinsGate normalList;
+  SteinsGate0 = import ./steinsGate0 normalList;
+  SteinsGateElite = import ./steinsGateElite normalList;
+  SteinsGateLBP = import ./steinsGateLBP normalList;
 }

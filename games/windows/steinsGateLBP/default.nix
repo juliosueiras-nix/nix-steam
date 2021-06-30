@@ -1,33 +1,33 @@
 { makeSteamGame, proton, steamUserInfo, gameInfo, gameFileInfo }:
 
 let
-  mainGameName = "Payday";
+  mainGameName = "SteinsGateLBP";
 in makeSteamGame {
   inherit steamUserInfo;
 
   game = gameInfo {
     name = mainGameName;
-    appId = "24240";
+    appId = "930910";
     platform = "windows";
   };
 
   gameFiles = [
     (gameFileInfo {
       inherit mainGameName;
-      name = "Payday-Content";
-      appId = "24240";
+      name = "SteinsGateLBP-English";
+      appId = "930910";
       platform = "windows";
-      depotId = "24241";
-      manifestId = "2887059265933254853";
+      depotId = "930912";
+      manifestId = "3342101974694904456";
     })
 
     (gameFileInfo {
       inherit mainGameName;
-      name = "Payday-English";
-      appId = "24240";
+      name = "DirectX-2010-Redist";
+      appId = "228980";
       platform = "windows";
-      depotId = "24242";
-      manifestId = "6469208572524230226";
+      depotId = "228990";
+      manifestId = "1829726630299308803";
     })
   ];
 

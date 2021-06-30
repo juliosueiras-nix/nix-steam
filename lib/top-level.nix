@@ -11,24 +11,25 @@ rec {
   protonWrapperScript = { game, gameFiles, realGameLocation, proton, lndir, lib, steamUserInfo, steamcmd, steam }: ''
     export SteamAppId=${game.appId}
     export HOME=/tmp/steam-test
-    mkdir -p $HOME/{protons/${proton.name}/prefix,games/${game.name}/manifests}
+    mkdir -p $HOME/{protons/${proton.name}/{prefix,proton},games/${game.name}/manifests}
     ${steamcmd}/bin/steamcmd +exit
     ${lndir}/bin/lndir ${realGameLocation}/ $HOME/games/${game.name}/
     ${lndir}/bin/lndir ${gameFiles} $HOME/games/${game.name}/manifests
     chmod -R +rw $HOME/games/${game.name}
 
     if [[ ! -f "${proton}/${proton.name}/manifest.json" ]]; then
-      cp -L -r ${proton}/* $HOME/protons/${proton.name}
+      cp -L -r ${proton}/* $HOME/protons/${proton.name}/proton
     else
-      cp -L -r ${steamUserInfo.targetStore}/linux/${proton.name}/* $HOME/protons/${proton.name}
-      mkdir -p $HOME/protons/${proton.name}/manifests
-      ${lndir}/bin/lndir ${proton} $HOME/protons/${proton.name}/manifests
+      cp -L -r ${steamUserInfo.targetStore}/linux/${proton.name}/* $HOME/protons/${proton.name}/proton
+      mkdir -p $HOME/protons/${proton.name}/proton/manifests
+      ${lndir}/bin/lndir ${proton} $HOME/protons/${proton.name}/proton/manifests
     fi
 
-    chmod +x $HOME/protons/${proton.name}/proton
+    chmod +x $HOME/protons/${proton.name}/proton/proton
+    chmod -R +rw $HOME/protons/${proton.name}/proton
 
-    export PROTON_HOME=$HOME/protons/${proton.name}
-    export PROTON_PREFIX_HOME=$PROTON_HOME/prefix
+    export PROTON_HOME=$HOME/protons/${proton.name}/proton
+    export PROTON_PREFIX_HOME=$PROTON_HOME/../prefix
 
     ${lib.optionalString steamUserInfo.useGuardFiles ''
       cp -r ${steamUserInfo.cachedFileDir}/* $HOME/.steam/steam
