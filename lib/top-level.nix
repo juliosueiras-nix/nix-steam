@@ -64,6 +64,6 @@ rec {
 
 
   makeSteamGame = callPackage ./make-steam-game.nix {
-    inherit steamGameFetcher callPackage protonWrapperScript linuxWrapperScript;
+    inherit gameFileInfo steamGameFetcher callPackage protonWrapperScript linuxWrapperScript;
   };
 }

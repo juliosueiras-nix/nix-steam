@@ -17,4 +17,6 @@ in {
   SteinsGate0 = import ./steinsGate0 normalList;
   SteinsGateElite = import ./steinsGateElite normalList;
   SteinsGateLBP = import ./steinsGateLBP normalList;
+  AlanWake = import ./alanWake normalList;
+  ThereIsNoGame = import ./thereIsNoGame normalList;
 }
