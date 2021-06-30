@@ -16,6 +16,6 @@ writeScriptBin game.name ''
     export STEAM_COMPAT_DATA_PATH=$PROTON_PREFIX_HOME
     export STEAM_COMPAT_CLIENT_INSTALL_PATH=$HOME/.steam/steam
 
-    $HOME/protons/${proton.name}/proton waitforexitandrun ./ProjectWingman.exe -nohmd
+    $PROTON_HOME/proton waitforexitandrun ./ProjectWingman.exe -nohmd
   ''}
 ''
