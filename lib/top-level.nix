@@ -11,9 +11,10 @@ rec {
   protonWrapperScript = { game, gameFiles, proton, lndir, lib, steamUserInfo, steamcmd, steam }: ''
     export SteamAppId=${game.appId}
     export HOME=/tmp/steam-test
-    mkdir -p $HOME/{protons/${proton.name}/prefix,games/${game.name}}
+    mkdir -p $HOME/{protons/${proton.name}/prefix,games/${game.name}/manifests}
     ${steamcmd}/bin/steamcmd +exit
-    ${lndir}/bin/lndir ${gameFiles} $HOME/games/${game.name}
+    ${lndir}/bin/lndir ${steamUserInfo.targetStore}/${game.platform}/${game.name}/ $HOME/games/${game.name}/
+    ${lndir}/bin/lndir ${gameFiles} $HOME/games/${game.name}/manifests
     chmod -R +rw $HOME/games/${game.name}
     cp -L -r ${proton}/* $HOME/protons/${proton.name}
     chmod +x $HOME/protons/${proton.name}/proton
