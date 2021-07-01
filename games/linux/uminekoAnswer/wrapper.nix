@@ -1,4 +1,4 @@
-{ game, lib, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, symlinkJoin, lndir, linuxWrapperScript, realGameLocation, steacmdLogin, ... }:
+{ game, lib, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, symlinkJoin, lndir, linuxWrapperScript, realGameLocation, steamcmdLogin, ... }:
 
 writeScriptBin game.name ''
   ${
@@ -12,7 +12,7 @@ writeScriptBin game.name ''
 
   chmod +rwx $HOME/games/${game.name}/Umineko5to8
 
-  ${steacmdLogin { inherit steamUserInfo steamcmd; }}
+  ${steamcmdLogin { inherit steamUserInfo steamcmd; }}
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
     cd $HOME/games/${game.name}
     exec ./Umineko5to8

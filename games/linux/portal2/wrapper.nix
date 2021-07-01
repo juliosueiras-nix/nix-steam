@@ -20,7 +20,7 @@ writeScriptBin game.name ''
 
   if [[ $STEAM_RUNNING == 0 ]]; then
     chmod -R +rw $HOME/.steam
-    ${steacmdLogin { inherit steamUserInfo steamcmd; }}
+    ${steamcmdLogin { inherit steamUserInfo steamcmd; }}
     (${steam}/bin/steam -silent -login ${steamUserInfo.username} $(cat ${steamUserInfo.passwordFile}) &)
     sleep 60
   fi

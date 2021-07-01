@@ -7,7 +7,7 @@ in writeScriptBin game.name ''
     }
   }
 
-  ${steacmdLogin { inherit steamUserInfo steamcmd; }}
+  ${steamcmdLogin { inherit steamUserInfo steamcmd; }}
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
     cd $HOME/games/${game.name}
     exec ./HigurashiEp06.x86	

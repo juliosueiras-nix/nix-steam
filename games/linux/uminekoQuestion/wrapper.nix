@@ -12,7 +12,7 @@ writeScriptBin game.name ''
 
   chmod +rwx $HOME/games/${game.name}/Umineko1to4
 
-  ${steacmdLogin { inherit steamUserInfo steamcmd; }}
+  ${steamcmdLogin { inherit steamUserInfo steamcmd; }}
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
     cd $HOME/games/${game.name}
     exec ./Umineko1to4

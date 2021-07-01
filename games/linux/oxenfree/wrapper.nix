@@ -7,13 +7,13 @@ writeScriptBin game.name ''
     }
   }
 
-  rm $HOME/games/${game.name}/helltaker_lnx.x86_64	
-  cp -L ${realGameLocation}/helltaker_lnx.x86_64 $HOME/games/${game.name}/
-  chmod -R +rwx $HOME/games/${game.name}/helltaker_lnx.x86_64
+  rm $HOME/games/${game.name}/Oxenfree.x86_64	
+  cp -L ${realGameLocation}/Oxenfree.x86_64 $HOME/games/${game.name}/
+  chmod -R +rwx $HOME/games/${game.name}/Oxenfree.x86_64
 
   ${steamcmdLogin { inherit steamUserInfo steamcmd; }}
   ${steam-run-native}/bin/steam-run ${writeScript "fix-${game.name}" ''
     cd $HOME/games/${game.name}/
-    exec ./helltaker_lnx.x86_64	
+    exec ./Oxenfree.x86_64	
   ''}
 ''

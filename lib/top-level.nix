@@ -66,9 +66,7 @@ rec {
     ${steamcmd}/bin/steamcmd +login ${steamUserInfo.username} $(cat ${steamUserInfo.passwordFile}) +exit
   '';
 
-
-
   makeSteamGame = callPackage ./make-steam-game.nix {
-    inherit gameFileInfo steamGameFetcher callPackage protonWrapperScript linuxWrapperScript;
+    inherit gameFileInfo steamGameFetcher callPackage protonWrapperScript linuxWrapperScript steamcmdLogin;
   };
 }

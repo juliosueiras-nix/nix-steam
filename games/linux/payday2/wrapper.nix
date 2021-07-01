@@ -1,4 +1,4 @@
-{ game, lib, steam, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, symlinkJoin, lndir, realGameLocation, linuxWrapperScript, steacmdLogin, ... }:
+{ game, lib, steam, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, symlinkJoin, lndir, realGameLocation, linuxWrapperScript, steamcmdLogin, ... }:
 
 writeScriptBin game.name ''
   ${
@@ -19,7 +19,7 @@ writeScriptBin game.name ''
     sleep 60
   fi
 
-  ${steacmdLogin { inherit steamUserInfo steamcmd; }}
+  ${steamcmdLogin { inherit steamUserInfo steamcmd; }}
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
     export LD_LIBRARY_PATH=$HOME/games/${game.name}:$LD_LIBRARY_PATH
     cd $HOME/games/${game.name}
