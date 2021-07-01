@@ -39,12 +39,12 @@ in stdenv.mkDerivation {
       chmod -R +rw $HOME/.local/share/steamctl/
     ''}
 
-    steamctl --user ${steamUserInfo.username} --password_file ${steamUserInfo.passwordFile} depot list -os ${game.platform}  -a ${game.appId} -d ${game.depotId} -m ${game.manifestId} --long > manifest.txt
+    steamctl --user ${steamUserInfo.username} --password_file ${steamUserInfo.passwordFile} depot list -os ${game.platform}  -a ${game.appId} -d ${game.depotId} -m ${game.manifestId} --long --skip-licenses > manifest.txt 
 
     ${ruby}/bin/ruby ${generateJSON} manifest.txt > manifest.json
     rm manifest.txt
 
-    steamctl --user ${steamUserInfo.username} --password_file test depot download -os ${game.platform}  -a ${game.appId} -d ${game.depotId} -m ${game.manifestId} -o $PWD/game
+    steamctl --user ${steamUserInfo.username} --password_file test depot download -os ${game.platform}  -a ${game.appId} -d ${game.depotId} -m ${game.manifestId} -o $PWD/game --skip-licenses 
 
     ${game.extraAction}
   
