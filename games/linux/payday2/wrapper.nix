@@ -1,4 +1,4 @@
-{ game, lib, steam, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, symlinkJoin, lndir, realGameLocation, linuxWrapperScript, ... }:
+{ game, lib, steam, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, symlinkJoin, lndir, realGameLocation, linuxWrapperScript, steacmdLogin, ... }:
 
 writeScriptBin game.name ''
   ${
@@ -15,11 +15,11 @@ writeScriptBin game.name ''
   STEAM_RUNNING="$(pgrep steam -c)"
 
   if [[ $STEAM_RUNNING == 0 ]]; then
-    (${steam}/bin/steam -silent -login ${steamUserInfo.username} ${steamUserInfo.password} &)
+    (${steam}/bin/steam -silent -login ${steamUserInfo.username} $(cat ${steamUserInfo.passwordFile}) &)
     sleep 60
   fi
 
-  ${steamcmd}/bin/steamcmd +login ${steamUserInfo.username} ${steamUserInfo.password} +exit
+  ${steacmdLogin { inherit steamUserInfo steamcmd; }}
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
     export LD_LIBRARY_PATH=$HOME/games/${game.name}:$LD_LIBRARY_PATH
     cd $HOME/games/${game.name}

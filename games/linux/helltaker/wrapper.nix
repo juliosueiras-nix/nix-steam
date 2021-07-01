@@ -1,4 +1,4 @@
-{ game, lib, steamcmd, steam-run-native, writeScript, writeScriptBin, gameFiles, steamUserInfo, lndir, linuxWrapperScript, realGameLocation, ... }:
+{ game, lib, steamcmd, steam-run-native, writeScript, writeScriptBin, gameFiles, steamUserInfo, lndir, linuxWrapperScript, realGameLocation, steamcmdLogin, ... }:
 
 writeScriptBin game.name ''
   ${
@@ -11,7 +11,7 @@ writeScriptBin game.name ''
   cp -L ${realGameLocation}/helltaker_lnx.x86_64 $HOME/games/${game.name}/
   chmod -R +rwx $HOME/games/${game.name}/helltaker_lnx.x86_64
 
-  ${steamcmd}/bin/steamcmd +login ${steamUserInfo.username} ${steamUserInfo.password} +exit
+  ${steacmdLogin { inherit steamUserInfo steamcmd; }}
   ${steam-run-native}/bin/steam-run ${writeScript "fix-${game.name}" ''
     cd $HOME/games/${game.name}/
     exec ./helltaker_lnx.x86_64	

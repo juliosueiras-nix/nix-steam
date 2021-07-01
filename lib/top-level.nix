@@ -39,8 +39,8 @@ rec {
 
     if [[ $STEAM_RUNNING == 0 ]]; then
       chmod -R +rw $HOME/.steam
-      ${steamcmd}/bin/steamcmd +login ${steamUserInfo.username} ${steamUserInfo.password} +exit
-      (${steam}/bin/steam -silent -login ${steamUserInfo.username} ${steamUserInfo.password} &)
+      ${steamcmdLogin { inherit steamUserInfo steamcmd; } }
+      (${steam}/bin/steam -silent -login ${steamUserInfo.username} $(cat ${steamUserInfo.passwordFile})  &)
       sleep 60
     fi
   '';
@@ -61,6 +61,11 @@ rec {
 
     chmod -R +rw $HOME/.steam
   '';
+
+  steamcmdLogin = { steamUserInfo, steamcmd }: ''
+    ${steamcmd}/bin/steamcmd +login ${steamUserInfo.username} $(cat ${steamUserInfo.passwordFile}) +exit
+  '';
+
 
 
   makeSteamGame = callPackage ./make-steam-game.nix {

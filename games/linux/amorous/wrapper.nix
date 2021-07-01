@@ -1,4 +1,4 @@
-{ enableAdult ? false, game, linuxWrapperScript, lib, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, realGameLocation, lndir, ... }:
+{ enableAdult ? false, game, linuxWrapperScript, lib, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, realGameLocation, lndir, steacmdLogin, ... }:
 
 # Make sure you run it in a directory with no files
 writeScriptBin game.name ''
@@ -22,7 +22,7 @@ writeScriptBin game.name ''
     rm $HOME/games/${game.name}/ShowMeSomeBooty.txt
   ''}
 
-  ${steamcmd}/bin/steamcmd +login ${steamUserInfo.username} ${steamUserInfo.password} +exit
+  ${steacmdLogin { inherit steamUserInfo steamcmd; }}
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
     export LD_LIBRARY_PATH=${realGameLocation}/lib:${realGameLocation}/lib64:$LD_LIBRARY_PATH
     export MONO_IOMAP=case

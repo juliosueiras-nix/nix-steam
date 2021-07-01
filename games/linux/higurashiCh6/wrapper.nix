@@ -1,4 +1,4 @@
-{ game, lib, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, symlinkJoin, linuxWrapperScript, realGameLocation,  ... }:
+{ game, lib, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, symlinkJoin, linuxWrapperScript, realGameLocation, steamcmdLogin, ... }:
 
 in writeScriptBin game.name ''
   ${
@@ -7,7 +7,7 @@ in writeScriptBin game.name ''
     }
   }
 
-  ${steamcmd}/bin/steamcmd +login ${steamUserInfo.username} ${steamUserInfo.password} +exit
+  ${steacmdLogin { inherit steamUserInfo steamcmd; }}
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
     cd $HOME/games/${game.name}
     exec ./HigurashiEp06.x86	

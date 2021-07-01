@@ -1,0 +1,28 @@
+diff --git a/steamctl/argparser.py b/steamctl/argparser.py
+index b484f45..f023422 100644
+--- a/steamctl/argparser.py
++++ b/steamctl/argparser.py
+@@ -62,6 +62,7 @@ def generate_parser(pre=False):
+ 
+     parser.add_argument('--anonymous', action='store_true', help='Anonymous Steam login')
+     parser.add_argument('--user', type=str, help='Username for Steam login')
++    parser.add_argument('--password_file', type=str, help='Password File')
+     parser.set_defaults(_cmd_func=print_help)
+ 
+     if _subcommands:
+diff --git a/steamctl/clients.py b/steamctl/clients.py
+index 2deedc2..0398bb8 100644
+--- a/steamctl/clients.py
++++ b/steamctl/clients.py
+@@ -93,7 +93,10 @@ class CachingSteamClient(SteamClient):
+             else:
+                 self._LOG.info("Enter Steam login")
+ 
+-            result = self.cli_login(self.username)
++
++            passwordFile = open(args.password_file, "r")
++            password = passwordFile.read().rstrip()
++            result = self.cli_login(self.username, password)
+ 
+         if not lastFile.exists() or lastFile.read_text() != self.username:
+             lastFile.write_text(self.username)

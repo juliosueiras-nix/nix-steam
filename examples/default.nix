@@ -1,7 +1,8 @@
 let 
   defaultNix = (import ../default.nix {}).defaultNix;
-in (defaultNix.makeSteamStore.x86_64-linux {
-  username = "test";
-  password = "test";
-  useGuardFiles = false;
-}).linux.Antichamber
+  steamStore = (defaultNix.makeSteamStore.x86_64-linux {
+    username = "<>";
+    password = "<>";
+    useGuardFiles = false;
+  });
+in steamStore.linux.Portal2

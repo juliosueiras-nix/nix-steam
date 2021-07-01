@@ -1,1 +1,1 @@
-{ username, password, useGuardFiles, cachedFileDir, depotdownloaderStorage, targetStore }
+{ username, passwordFile, useGuardFiles, cachedFileDir, steamctlFiles, targetStore }

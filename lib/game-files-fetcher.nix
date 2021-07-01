@@ -1,4 +1,4 @@
-{ stdenv, nixpkgsSource, ruby, writeText, jq, nixUnstable, lib, cacert, depotdownloader, ...  }:
+{ stdenv, nixpkgsSource, ruby, writeText, jq, nixUnstable, lib, cacert, steamctl, ...  }:
 
 { game, steamUserInfo, ... }:
 
@@ -6,26 +6,15 @@ let
   generateJSON = writeText "generate-manifest-json" ''
     require 'json'
 
-    lineCount = 0
-
-    fileName = ""
-    fileSize = 0
-    md5Checksum = ""
-
     result = []
 
-    File.read(ARGV[0]).split("\n").map {|line|
-      case lineCount
-      when 0
-        fileName = line
-        lineCount+=1
-      when 1
-        fileSize = line.to_i
-        lineCount+=1
-      when 2
-        md5Checksum = line.gsub(/\t/, ${"'"}').downcase
-        result.append({ fileName: fileName, fileSize: fileSize, md5Checksum: md5Checksum })
-        lineCount=0
+    File.read(ARGV[0]).split("\n").map {|line| 
+      matches = line.match(/(.*) - size:(.*) sha1:(.*)/)
+      if matches
+        fileName = matches.captures[0].gsub(/\\/,'/')
+        fileSize = matches.captures[1].gsub(/,/, ${"'"}').to_i
+        sha1Checksum = matches.captures[2]
+        result.append({ fileName: fileName, fileSize: fileSize, sha1Checksum: sha1Checksum })
       end
     }
 
@@ -38,25 +27,24 @@ in stdenv.mkDerivation {
     jq
     nixUnstable
     cacert
-    depotdownloader
+    steamctl
   ];
 
   buildCommand = ''
     export HOME=$PWD
+
     ${lib.optionalString steamUserInfo.useGuardFiles ''
-      mkdir -p $HOME/.local/share/IsolatedStorage
-      cp -r ${steamUserInfo.depotdownloaderStorage}/* $HOME/.local/share/IsolatedStorage/
-      chmod -R +rw $HOME/.local/share/IsolatedStorage/
+      mkdir -p $HOME/.local/share/steamctl
+      cp -r ${steamUserInfo.steamctlFiles}/* $HOME/.local/share/steamctl/
+      chmod -R +rw $HOME/.local/share/steamctl/
     ''}
-    depotdownloader -os ${game.platform} -username ${steamUserInfo.username} -password ${steamUserInfo.password} -dir $PWD/game -app ${game.appId} -depot ${game.depotId} -manifest-only -manifest ${game.manifestId} -max-downloads 20 
-    rm -r game/.DepotDownloader
 
-    sed -i '1,2d' game/manifest*
-    ${ruby}/bin/ruby ${generateJSON} game/manifest* > manifest.json
-    rm -r game
+    steamctl --user ${steamUserInfo.username} --password_file ${steamUserInfo.passwordFile} depot list -os ${game.platform}  -a ${game.appId} -d ${game.depotId} -m ${game.manifestId} --long > manifest.txt
 
-    depotdownloader -os ${game.platform} -username ${steamUserInfo.username} -password ${steamUserInfo.password} -dir $PWD/game -app ${game.appId} -depot ${game.depotId} -manifest ${game.manifestId} -max-downloads 20 
-    rm -r game/.DepotDownloader
+    ${ruby}/bin/ruby ${generateJSON} manifest.txt > manifest.json
+    rm manifest.txt
+
+    steamctl --user ${steamUserInfo.username} --password_file test depot download -os ${game.platform}  -a ${game.appId} -d ${game.depotId} -m ${game.manifestId} -o $PWD/game
 
     ${game.extraAction}
   

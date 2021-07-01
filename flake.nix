@@ -14,6 +14,12 @@
       config = { 
         allowUnfree = true;
       };
+
+      overlays = [(final: prev: {
+        steamctl = prev.callPackage ./deps {
+          pythonPackages = prev.python38Packages;
+        };
+      })];
     };
   in {
     helperLib = pkgs.callPackage ./lib/top-level.nix {
@@ -32,8 +38,9 @@
           pkgs.nixfmt
           pkgs.ripgrep
           pkgs.steamcmd
-          pkgs.depotdownloader
           pkgs.protontricks
+          pkgs.steamctl
+          pkgs.ruby
         ];
       };
     });

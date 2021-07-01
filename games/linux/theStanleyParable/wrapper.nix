@@ -1,4 +1,4 @@
-{ game, lib, steam, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, symlinkJoin, lndir, linuxWrapperScript, realGameLocation, ... }:
+{ game, lib, steam, steamcmd, steam-run, writeScript, writeScriptBin, gameFiles, steamUserInfo, symlinkJoin, lndir, linuxWrapperScript, realGameLocation, steamcmdLogin, ... }:
 
 writeScriptBin game.name ''
   ${
@@ -20,13 +20,11 @@ writeScriptBin game.name ''
 
   if [[ $STEAM_RUNNING == 0 ]]; then
     chmod -R +rw $HOME/.steam
-    ${steamcmd}/bin/steamcmd +login ${steamUserInfo.username} ${steamUserInfo.password} +exit
-    (${steam}/bin/steam -silent -login ${steamUserInfo.username} ${steamUserInfo.password} &)
+    ${steacmdLogin { inherit steamUserInfo steamcmd; }}
+    (${steam}/bin/steam -silent -login ${steamUserInfo.username} $(cat ${steamUserInfo.passwordFile}) &)
     sleep 60
   fi
 
-  chmod -R +rw $HOME/.steam
-  ${steamcmd}/bin/steamcmd +login ${steamUserInfo.username} ${steamUserInfo.password} +exit
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
     cd $HOME/games/${game.name}
     exec ./stanley -game thestanleyparable
