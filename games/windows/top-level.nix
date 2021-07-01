@@ -19,4 +19,5 @@ in {
   SteinsGateLBP = import ./steinsGateLBP normalList;
   AlanWake = import ./alanWake normalList;
   ThereIsNoGame = import ./thereIsNoGame normalList;
+  BleachBraveSouls = import ./bleachBraveSouls normalList;
 }
