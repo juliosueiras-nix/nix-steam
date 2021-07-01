@@ -20,4 +20,5 @@ in {
   AlanWake = import ./alanWake normalList;
   ThereIsNoGame = import ./thereIsNoGame normalList;
   BleachBraveSouls = import ./bleachBraveSouls normalList;
+  Brawlhalla = import ./brawlhalla normalList;
 }
