@@ -12,7 +12,6 @@ writeScriptBin game.name ''
 
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
     cd ${steamUserInfo.targetStore}/windows/ConanExiles/
-    export LD_LIBRARY_PATH=${lib.makeLibraryPath [ curl krb5 keyutils ]}:$LD_LIBRARY_PATH
     export WINEDLLOVERRIDES="dxgi=n" 
     export DXVK_HUD=1
     export WINEPREFIX=$PROTON_PREFIX_HOME/pfx

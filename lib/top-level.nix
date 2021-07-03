@@ -10,7 +10,7 @@ rec {
 
   protonWrapperScript = { game, gameFiles, realGameLocation, proton, lndir, lib, steamUserInfo, steamcmd, steam }: ''
     export SteamAppId=${game.appId}
-    export HOME=/tmp/steam-test
+    export HOME=${steamUserInfo.outputStore}
     mkdir -p $HOME/{protons/${proton.name}/{prefix,proton},games/${game.name}/manifests}
     ${steamcmd}/bin/steamcmd +exit
     ${lndir}/bin/lndir ${realGameLocation}/ $HOME/games/${game.name}/
@@ -47,7 +47,7 @@ rec {
 
   linuxWrapperScript = { game, gameFiles, realGameLocation, lndir, lib, steamUserInfo, steamcmd }: ''
     export SteamAppId=${game.appId}
-    export HOME=/tmp/steam-test
+    export HOME=${steamUserInfo.outputStore}
     mkdir -p $HOME/games/${game.name}/manifests
     ${lndir}/bin/lndir ${realGameLocation} $HOME/games/${game.name}
     ${lndir}/bin/lndir ${gameFiles} $HOME/games/${game.name}/manifests
