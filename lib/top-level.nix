@@ -11,6 +11,7 @@ rec {
   protonWrapperScript = { game, gameFiles, realGameLocation, proton, lndir, lib, steamUserInfo, steamcmd, steam }: ''
     export SteamAppId=${game.appId}
     export HOME=${steamUserInfo.outputStore}
+    export SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt
     mkdir -p $HOME/{protons/${proton.name}/{prefix,proton},games/${game.name}/manifests}
     ${steamcmd}/bin/steamcmd +exit
     ${lndir}/bin/lndir ${realGameLocation}/ $HOME/games/${game.name}/
