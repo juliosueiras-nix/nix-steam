@@ -15,7 +15,13 @@
         allowUnfree = true;
       };
 
-      overlays = [(final: prev: {
+      overlays = [(final: prev: let
+        steam = (prev.steam.override {
+          extraLibraries = pkgs: [ pkgs.cacert ];
+        });
+      in {
+        steam-run = steam.run;
+        steam = steam;
         steamctl = prev.callPackage ./deps {
           pythonPackages = prev.python38Packages;
         };
@@ -34,13 +40,10 @@
       pkgs.mkShell { 
         NIX_PATH = "nixpkgs=${nixpkgs}";
         buildInputs = [ 
-          pkgs.arion
           pkgs.nixfmt
-          pkgs.ripgrep
           pkgs.steamcmd
-          pkgs.protontricks
           pkgs.steamctl
-          pkgs.ruby
+          
         ];
       };
     });
