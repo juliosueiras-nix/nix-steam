@@ -39,22 +39,22 @@ in stdenv.mkDerivation {
       chmod -R +rw $HOME/.local/share/steamctl/
     ''}
 
+    mkdir -p ${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/
+
+    (chmod -R g+rw ${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/ || true) > /dev/null 2>&1
+
     steamctl --user ${steamUserInfo.username} --password_file ${steamUserInfo.passwordFile} depot list -os ${game.platform}  -a ${game.appId} -d ${game.depotId} -m ${game.manifestId} --long > manifest.txt
 
     ${ruby}/bin/ruby ${generateJSON} manifest.txt > manifest.json
     rm manifest.txt
 
-    steamctl --user ${steamUserInfo.username} --password_file test depot download -os ${game.platform}  -a ${game.appId} -d ${game.depotId} -m ${game.manifestId} -o $PWD/game
+    steamctl --user ${steamUserInfo.username} --password_file test depot download -os ${game.platform}  -a ${game.appId} -d ${game.depotId} -m ${game.manifestId} -o ${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/
 
-    ${game.extraAction}
+    pushd .
+      cd ${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}
+      ${game.extraAction}
+    popd
   
-    cd game 
-    mkdir -p ${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/
-    cat ../manifest.json | jq -r '.[].fileName' | sed -e "s/'/\\\'/g" | xargs -I % sh -c 'echo "Adding % to ${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}"; mkdir -p "${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/$(dirname "%")"; chmod g+rw "${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/$(dirname "%")"; mv "%" "${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/%"; chmod g+rw "${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/%"'
-
-    cd ..
-    rm -r game
-
     mkdir -p $out/${game.name}
     mv manifest.json $out/${game.name}/manifest.json
   '';

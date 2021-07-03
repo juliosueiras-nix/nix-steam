@@ -361,8 +361,8 @@ self: super: {
     version = "0.8.0";
     src = fetchgit {
       url = "git://github.com/ValvePython/steamctl";
-      rev = "235846745af9fdca18b52d1fa7835c08632dd6f5";
-      sha256 = "09nna4ayncff1i9r95bwwmw3r99d58w4q63jqhnmys6rfknfrz66";
+      rev = "dbbe1c890d56a272dffcf06c0eab8e11d8e29364";
+      sha256 = "8VZvezHQiStsob9vYg+7n/8IYKpqj/KtvxeDoMCY6xY=";
     };
     format = "setuptools";
     doCheck = false;

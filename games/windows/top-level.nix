@@ -21,4 +21,6 @@ in {
   ThereIsNoGame = import ./thereIsNoGame normalList;
   BleachBraveSouls = import ./bleachBraveSouls normalList;
   Brawlhalla = import ./brawlhalla normalList;
+  EiyuSenkiGold = import ./eiyuSenkiGold normalList;
+  ConanExiles = import ./conanExiles normalList;
 }
