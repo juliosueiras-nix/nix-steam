@@ -8,7 +8,7 @@
 -            fp.seek(0, 2)
 +        try:
 +            original_umask = os.umask(0)
-+            with open(os.open(filepath, os.O_CREAT | os.O_WRONLY | os.O_RDONLY, 0o664), 'r+b' if verify else 'wb') as fp:
++            with os.fdopen(os.open(filepath, os.O_CREAT | os.O_RDWR, 0o664), 'r+b' if verify else 'wb') as fp:
 +                fp.seek(0, 2)
 +
 +                # pre-allocate space
