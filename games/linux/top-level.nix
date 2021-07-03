@@ -15,4 +15,5 @@ in {
   Payday2 = import ./payday2 normalList;
   TheStanleyParable = import ./theStanleyParable normalList;
   Oxenfree = import ./oxenfree normalList;
+  ShenzhenIO = import ./shenzhenIO normalList;
 }

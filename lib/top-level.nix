@@ -1,4 +1,4 @@
-{ callPackage, cacert, nixpkgsSource }:
+{ callPackage, steam, cacert, nixpkgsSource }:
 
 rec {
   steamUserInfo = import ./steam-user.nix;
@@ -41,12 +41,7 @@ rec {
     if [[ $STEAM_RUNNING == 0 ]]; then
       chmod -R +rw $HOME/.steam
       ${steamcmdLogin { inherit steamUserInfo steamcmd; } }
-      (${steam.override {
-        extraProfile = ''
-          mkdir -p /etc/ssl/certs/
-          cp ${cacert}/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-bundle.crt
-        '';
-      }}/bin/steam -silent -login ${steamUserInfo.username} "$(cat "${steamUserInfo.passwordFile}")"  &)
+      (${steam}/bin/steam -silent -login ${steamUserInfo.username} "$(cat "${steamUserInfo.passwordFile}")"  &)
       sleep 60
     fi
   '';
@@ -64,6 +59,15 @@ rec {
     ${lib.optionalString steamUserInfo.useGuardFiles ''
       cp -r ${steamUserInfo.cachedFileDir}/* $HOME/.steam/steam
     ''}
+
+    STEAM_RUNNING="$(pgrep steam -c)"
+
+    if [[ $STEAM_RUNNING == 0 ]]; then
+      chmod -R +rw $HOME/.steam
+      ${steamcmdLogin { inherit steamUserInfo steamcmd; } }
+      (${steam}/bin/steam -silent -login ${steamUserInfo.username} "$(cat "${steamUserInfo.passwordFile}")" > /dev/null &)
+      sleep 60
+    fi
 
     chmod -R +rw $HOME/.steam
   '';
