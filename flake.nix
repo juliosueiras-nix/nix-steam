@@ -15,13 +15,7 @@
         allowUnfree = true;
       };
 
-      overlays = [(final: prev: let
-        steam = (prev.steam.override {
-          extraLibraries = pkgs: [ pkgs.cacert ];
-        });
-      in {
-        steam-run = steam.run;
-        steam = steam;
+      overlays = [(final: prev: {
         steamctl = prev.callPackage ./deps {
           pythonPackages = prev.python38Packages;
         };
