@@ -1,0 +1,95 @@
+--- a/steamctl/clients.py	2021-07-03 10:30:42.027766519 -0400
++++ b/steamctl/clients.py	2021-07-03 10:37:42.270265767 -0400
+@@ -193,47 +193,52 @@
+         if not os.path.exists(filepath):
+             verify = False
+ 
+-        with open(filepath, 'r+b' if verify else 'wb') as fp:
+-            fp.seek(0, 2)
++        try:
++            original_umask = os.umask(0)
++            with open(os.open(filepath, os.O_CREAT | os.O_WRONLY | os.O_RDONLY, 0o664), 'r+b' if verify else 'wb') as fp:
++                fp.seek(0, 2)
++
++                # pre-allocate space
++                if fp.tell() != self.size:
++                    newsize = fp.truncate(self.size)
++
++                    if newsize != self.size:
++                        raise SteamError("Failed allocating space for {}".format(filepath))
++
++    #           self._LOG.info('{} {}  ({}, sha1:{})'.format(
++    #                              'Verifying' if verify else 'Downloading',
++    #                              relpath,
++    #                              fmt_size(self.size),
++    #                              checksum
++    #                              ))
++
++                fp.seek(0)
++                for chunk in self.chunks:
++                    # verify chunk sha hash
++                    if verify:
++                        cur_data = fp.read(chunk.cb_original)
++
++                        if sha1_hash(cur_data) == chunk.sha:
++                            if pbar:
++                                pbar.update(chunk.cb_original)
++                            continue
++
++                        fp.seek(chunk.offset)  # rewind before write
++
++                    # download and write chunk
++                    data = self.manifest.cdn_client.get_chunk(
++                                    self.manifest.app_id,
++                                    self.manifest.depot_id,
++                                    chunk.sha.hex(),
++                                    )
++
++                    fp.write(data)
++
++                    if pbar:
++                        pbar.update(chunk.cb_original)
++        finally:
++            os.umask(original_umask)
+ 
+-            # pre-allocate space
+-            if fp.tell() != self.size:
+-                newsize = fp.truncate(self.size)
+-
+-                if newsize != self.size:
+-                    raise SteamError("Failed allocating space for {}".format(filepath))
+-
+-#           self._LOG.info('{} {}  ({}, sha1:{})'.format(
+-#                              'Verifying' if verify else 'Downloading',
+-#                              relpath,
+-#                              fmt_size(self.size),
+-#                              checksum
+-#                              ))
+-
+-            fp.seek(0)
+-            for chunk in self.chunks:
+-                # verify chunk sha hash
+-                if verify:
+-                    cur_data = fp.read(chunk.cb_original)
+-
+-                    if sha1_hash(cur_data) == chunk.sha:
+-                        if pbar:
+-                            pbar.update(chunk.cb_original)
+-                        continue
+-
+-                    fp.seek(chunk.offset)  # rewind before write
+-
+-                # download and write chunk
+-                data = self.manifest.cdn_client.get_chunk(
+-                                self.manifest.app_id,
+-                                self.manifest.depot_id,
+-                                chunk.sha.hex(),
+-                                )
+-
+-                fp.write(data)
+-
+-                if pbar:
+-                    pbar.update(chunk.cb_original)
+ 
+ class CTLDepotManifest(CDNDepotManifest):
+     DepotFileClass = CTLDepotFile

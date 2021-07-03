@@ -2,16 +2,15 @@
 
 { steamUserInfo, game, gameFiles, drvPath, proton ? null }:
 
-callPackage drvPath {
+let
+  gameFilesMod = if (lib.isList gameFiles) then gameFiles else [ gameFiles ];
+in callPackage drvPath {
   realGameLocation = "${steamUserInfo.targetStore}/${game.platform}/${game.name}";
   inherit game gameFileInfo steamGameFetcher steamUserInfo proton steamcmdLogin protonWrapperScript linuxWrapperScript;
-  gameFiles = if !(lib.isList gameFiles) then steamGameFetcher {
-    inherit steamUserInfo;
-    game = gameFiles;
-  } else symlinkJoin {
+  gameFiles = symlinkJoin {
     name = "${game.name}-files";
 
-    paths = lib.forEach gameFiles (gameFile:
+    paths = lib.forEach gameFilesMod (gameFile:
     steamGameFetcher {
       inherit steamUserInfo;
       game = gameFile;

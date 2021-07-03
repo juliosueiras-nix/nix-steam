@@ -368,6 +368,8 @@ self: super: {
     doCheck = false;
     patches = [
       ./pass.patch
+      ./file.patch
+      ./dir.patch
     ];
     buildInputs = [];
     checkInputs = [];
