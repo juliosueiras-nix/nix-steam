@@ -9,8 +9,8 @@ writeScriptBin game.name ''
 
   ${steam-run}/bin/steam-run ${writeScript "fix-${game.name}" ''
     cd $HOME/games/${game.name}/
-    #export WINEDLLOVERRIDES="dxgi=b" 
-    #export DXVK_HUD=1
+    export WINEDLLOVERRIDES="dxgi=n" 
+    export DXVK_HUD=1
     export WINEPREFIX=$PROTON_PREFIX_HOME/pfx
     export STEAM_COMPAT_DATA_PATH=$PROTON_PREFIX_HOME
     export STEAM_COMPAT_CLIENT_INSTALL_PATH=$HOME/.steam/steam
