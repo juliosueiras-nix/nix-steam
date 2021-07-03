@@ -24,4 +24,5 @@ in {
   EiyuSenkiGold = import ./eiyuSenkiGold normalList;
   ConanExiles = import ./conanExiles normalList;
   HouseParty = import ./houseParty normalList;
+  Offworld = import ./offworld normalList;
 }
