@@ -10,11 +10,7 @@ nix-steam is a nix repo that contains steam games in both Linux and Windows(via 
 
 - it needs to support cgroup due to steam-run
 
-- it needs the `ca-derivation` and `recursive-nix` features of your nix configuration
-
 - it need sandbox to be off, hopefully in the future we can enable sandbox for everything
-
-- since it need `recursive-nix`, your nix-daemon(not the user's nix) need to be on unstable version
 
 ## Note
 
@@ -31,7 +27,12 @@ let
   defaultNix = (import ../default.nix {}).defaultNix;
 in (defaultNix.makeSteamStore.x86_64-linux {
   username = "<username>";
-  password = "<password>";
+
+  # Both of these need to be created beforehand, and targetStore need a a+rwx permission(only the dir itself)
+  outputStore = "<path-to-output-store>"; # this is where you will store the prefixes and various stuff
+  targetStore = "<path-to-target-store>"; # this is where you will store the games 
+
+  passwordFile = "<path-to-a-password-file>";
   useGuardFiles = false;
 })
 ```
@@ -48,10 +49,10 @@ $HOME/.steam/steam/config/libraryfolders.vdf
 $HOME/.steam/steam/ssfn*
 ```
 
-2. folder from running a basic depotdownloader -username -password
+2. folder from running a basic steamctl depot info or apps info
 
 ```
-$HOME/.local/share/IsolatedStorage
+$HOME/.local/share/steamctl
 ```
 
 after you have these files, you can login via this
@@ -61,10 +62,15 @@ let
   defaultNix = (import ../nix-steam/default.nix {}).defaultNix;
 in (defaultNix.makeSteamStore.x86_64-linux {
   username = "<username>";
-  password = "<password>";
+
+  # Both of these need to be created beforehand, and targetStore need a a+rwx permission(only the dir itself)
+  outputStore = "<path-to-output-store>"; # this is where you will store the prefixes and various stuff
+  targetStore = "<path-to-target-store>"; # this is where you will store the games 
+
+  passwordFile = "<path-to-a-password-file>";
   useGuardFiles = true;
   cachedFileDir = <path-to>/steamFiles;
-  depotdownloaderStorage = <path-to>/IsolatedStorage;
+  steamctlFiles = <path-to>/steamctlFiles;
 })
 ```
 
@@ -85,11 +91,13 @@ we will have the following template
 ```nix
 { makeSteamGame, steamUserInfo, gameInfo, gameFileInfo }:
 
-makeSteamGame {
+let
+  mainGameName = "Helltaker";
+in makeSteamGame {
   inherit steamUserInfo;
 
   game = gameInfo {
-    name = "Helltaker";
+    name = mainGameName;
     appId = "1289310"; # You can findout the appId from the steamdb page
   };
 
@@ -116,16 +124,20 @@ both depotid and manifestid can be found on their own page
 ```nix
 { makeSteamGame, steamUserInfo, gameInfo, gameFileInfo }:
 
-makeSteamGame {
+let
+  mainGameName = "Helltaker";
+in makeSteamGame {
   inherit steamUserInfo;
 
+
   game = gameInfo {
-    name = "Helltaker";
+    name = mainGameName;
     appId = "1289310";
   };
 
   gameFiles = [
     (gameFileInfo {
+      inherit mainGameName;
       name = "Helltaker";
       appId = "1289310"; # same AppId from above
       depotId = "1289314";
@@ -134,6 +146,7 @@ makeSteamGame {
     })
 
     (gameFileInfo {
+      inherit mainGameName;
       name = "Helltaker-Local";
       appId = "1289310"; # same AppId from above
       depotId = "1289315";
@@ -159,30 +172,25 @@ for most games, the wrapper follows a similar template to these
 
 the information about the launcher can be found under the [Configuration](https://steamdb.info/app/1289310/config/) section
 
+**Windows uses protonWrapperScript and Linux uses linuxWrapperScript**
+
 #### Linux Games
 
 ```nix
 { game, lib, steamcmd, steam-run-native, writeScript, writeScriptBin, gameFiles, steamUserInfo, lndir, ... }:
 
+
 writeScriptBin game.name ''
-  export SteamAppId=${game.appId}
-  export HOME=/tmp/steam-test
-  ${steamcmd}/bin/steamcmd +exit
+  ${
+    linuxWrapperScript {
+      inherit game gameFiles lndir lib steamUserInfo steamcmd realGameLocation;
+    }
+  }
 
-  mkdir -p $HOME/games/${game.name}
-
-  ${lndir}/bin/lndir ${gameFiles} $HOME/games/${game.name}
-  chmod -R +rw $HOME/games/${game.name}
   rm $HOME/games/${game.name}/<binary>	
   cp -L ${gameFiles}/<binary> $HOME/games/${game.name}/
   chmod +rwx $HOME/games/${game.name}/<binary>
 
-  ${lib.optionalString steamUserInfo.useGuardFiles ''
-    cp -r ${steamUserInfo.cachedFileDir}/* $HOME/.steam/steam
-  ''}
-
-  chmod -R +rw $HOME/.steam
-  ${steamcmd}/bin/steamcmd +login ${steamUserInfo.username} ${steamUserInfo.password} +exit
   ${steam-run-native}/bin/steam-run ${writeScript "fix-${game.name}" ''
     cd $HOME/games/${game.name}/
     exec ./<binary>
@@ -210,7 +218,7 @@ writeScriptBin game.name ''
     export STEAM_COMPAT_DATA_PATH=$HOME/.proton
     export STEAM_COMPAT_CLIENT_INSTALL_PATH=$HOME/.steam/steam
 
-    $HOME/protons/${proton.name}/proton waitforexitandrun ./<exe>	
+    $PROTON_HOME/proton waitforexitandrun ./<exe>	
   ''}
 ''
 ```
@@ -223,10 +231,8 @@ Lastly, make sure you have the new game under the platform's top-level.nix
 
 ## Caveats
 
-- right now the password is plaintext in the running process, hopefully, there will be an improvement via read file or other methods
+- right now the password is plaintext in the running process, is not in the scripts, but would shown if you do a `ps` command
 
-- some games, especially multiplayer/mmo games require double space due to those games checking for updates against the assets which won't be possible via symlink
-
-- right now, the target folder for temp directory, to put the games linkage, and steam running pipe is at /tmp/steam-test this, becomes a param later on
+- some games, especially multiplayer/mmo games will use the `targetStore` directly due to the update nature
 
 - due to steam restrictions, it needs to be run with --max-jobs 1
