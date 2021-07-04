@@ -12,7 +12,7 @@ rec {
     export SteamAppId=${game.appId}
     export HOME=${steamUserInfo.outputStore}
     export SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt
-    mkdir -p $HOME/{protons/${proton.name}/{prefix,proton},games/${game.name}/manifests}
+    mkdir -p $HOME/{prefix/$SteamAppId,protons/${proton.name}/proton,games/${game.name}/manifests}
     ${steamcmd}/bin/steamcmd +exit
     ${lndir}/bin/lndir ${realGameLocation}/ $HOME/games/${game.name}/
     ${lndir}/bin/lndir ${gameFiles} $HOME/games/${game.name}/manifests
@@ -30,7 +30,7 @@ rec {
     chmod -R +rw $HOME/protons/${proton.name}/proton
 
     export PROTON_HOME=$HOME/protons/${proton.name}/proton
-    export PROTON_PREFIX_HOME=$PROTON_HOME/../prefix
+    export PROTON_PREFIX_HOME=$HOME/prefix/$SteamAppId
 
     ${lib.optionalString steamUserInfo.useGuardFiles ''
       cp -r ${steamUserInfo.cachedFileDir}/* $HOME/.steam/steam

@@ -6,6 +6,9 @@ let
   generateJSON = writeText "generate-manifest-json" ''
     require 'json'
 
+    Encoding.default_external = Encoding::UTF_8
+    Encoding.default_internal = Encoding::UTF_8
+
     result = []
 
     File.read(ARGV[0]).split("\n").map {|line| 
