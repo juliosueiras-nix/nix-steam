@@ -25,4 +25,5 @@ in {
   ConanExiles = import ./conanExiles normalList;
   HouseParty = import ./houseParty normalList;
   Offworld = import ./offworld normalList;
+  KatanaZero = import ./katana-zero normalList;
 }
