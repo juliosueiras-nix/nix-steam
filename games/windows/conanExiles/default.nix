@@ -56,15 +56,6 @@ in makeSteamGame {
       depotId = "228990";
       manifestId = "1829726630299308803";
     })
-
-    (gameFileInfo {
-      inherit mainGameName;
-      name = "Steam-Linux-Runtime-Soldier";
-      appId = "1391110";
-      platform = "windows";
-      depotId = "1391111";
-      manifestId = "6193391955085222289";
-    })
   ];
 
   proton = proton.proton_6_10_ge;
