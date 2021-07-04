@@ -65,6 +65,8 @@ in stdenv.mkDerivation {
     mv manifest.json $out/${game.name}/manifest.json
   '';
 
+  __noChroot = true;
+
   outputHashAlgo = "sha256";
   outputHashMode = "recursive";
 }
