@@ -21,7 +21,7 @@ in writeScriptBin game.name ''
     export STEAM_COMPAT_CLIENT_INSTALL_PATH=$HOME/.steam/steam
     export PATH=$PATH:$PROTON_HOME/dist/bin
     
-    $PROTON_HOME/proton waitforexitandrun ./_CommonRedist/DirectX/Jun2010/DXSETUP.exe /silent
+    $PROTON_HOME/proton waitforexitandrun ./_CommonRedist/DirectX/Jun2010/DXSETUP.exe
     $PROTON_HOME/proton waitforexitandrun ./Launcher.exe
   ''}
 ''
