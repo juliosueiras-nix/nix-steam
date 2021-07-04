@@ -39,7 +39,10 @@ in stdenv.mkDerivation {
       chmod -R +rw $HOME/.local/share/steamctl/
     ''}
 
-    mkdir -p ${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/
+    pushd .
+      cd ${steamUserInfo.targetStore}
+      mkdir -p ${game.platform}/${game.mainGameName}
+    popd 
 
     (chmod -R g+rw ${steamUserInfo.targetStore}/${game.platform}/${game.mainGameName}/ || true) > /dev/null 2>&1
 
