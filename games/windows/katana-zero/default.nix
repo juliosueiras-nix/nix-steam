@@ -22,7 +22,7 @@ in makeSteamGame {
     })
   ];
 
-  proton = proton.proton_6_3;
+  proton = proton.proton_6_10_ge;
 
   drvPath = ./wrapper.nix;
 }
