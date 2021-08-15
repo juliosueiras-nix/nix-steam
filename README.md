@@ -1,7 +1,5 @@
 # Nix Steam System
 
-<video src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">Hello</video>
-
 ## What is Nix-Steam
 
 nix-steam is a nix repo that contains steam games in both Linux and Windows(via proton) to install and run declaratively in Linux distros(both nixos, and non-nixos)
